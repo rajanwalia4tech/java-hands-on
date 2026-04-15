@@ -35,7 +35,7 @@ class TicTacToeSystem {
             return;
         }
         try {
-            System.out.printf("%s plays at (%d, %d)%n", player.getName(), row, col);
+            System.out.printf("%s plays at (%d, %d)%n", (Object) player.getName(), (Object) row, (Object) col);
             game.makeMove(player, row, col);
             printBoard();
             System.out.println("Game Status: " + game.getStatus());

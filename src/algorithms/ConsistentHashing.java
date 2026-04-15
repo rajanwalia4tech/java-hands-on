@@ -37,7 +37,7 @@ public class ConsistentHashing {
         servers.add(server);
         for (int i = 0; i < numReplicas; i++) {
             long hash = hash(server + "-" + i); // Unique hash for each virtual node
-            ring.put(hash, server);
+            ring.put((Long)hash, server);
         }
     }
 
@@ -45,7 +45,7 @@ public class ConsistentHashing {
         if (servers.remove(server)) {
             for (int i = 0; i < numReplicas; i++) {
                 long hash = hash(server + "-" + i);
-                ring.remove(hash);
+                ring.remove((Long)hash);
             }
         }
     }
@@ -57,7 +57,7 @@ public class ConsistentHashing {
 
         long hash = hash(key);
         // Find the closest server in a clockwise direction
-        Map.Entry<Long, String> entry = ring.ceilingEntry(hash);
+        Map.Entry<Long, String> entry = ring.ceilingEntry((Long)hash);
         if (entry == null) {
             // If we exceed the highest node, wrap around to the first node
             entry = ring.firstEntry();
@@ -66,9 +66,7 @@ public class ConsistentHashing {
     }
 
     public void printRing(){
-        ring.forEach((key, value) -> {
-            System.out.println(key+" - " +value);
-        });
+        ring.forEach((key, value) -> System.out.println(key+" - " +value));
     }
 
     public static void main(String[] args) {
