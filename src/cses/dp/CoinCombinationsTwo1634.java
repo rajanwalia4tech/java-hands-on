@@ -1,5 +1,7 @@
-package cses.dp;
+//package cses.dp;
 
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.Scanner;
 
 /*
@@ -44,43 +46,99 @@ public class CoinCombinationsTwo1634 {
         }
 
         int res;
-//      res = solveUsingRecursion(coins, target);
+        ArrayList<Integer> cur = new ArrayList<>();
+        List<List<Integer>> out = new ArrayList<>();
+        int memo[] = new int[target+1];
+        Arrays.fill(memo, -1);
+        res = solveUsingRecursion(coins, target, cur, out, memo);
 //      System.out.println(res);
 
 //      int []memo = new int[target + 1];
 //      res = solveUsingMemoization(coins,target,memo);
 //      System.out.println(res);
 
-        res = solveUsingDP(coins,target);
+//        res = solveUsingDP(coins,target);
         System.out.println(res);
     }
 
-    private static int solveUsingRecursion(int[] coins, int target) {
-        if (target == 0) return 1;
-        if(target < 0) return 0;
+    private static int solveUsingRecursion(int[] coins, int target, ArrayList<Integer> cur, List<List<Integer>> out,int[] memo) {
+//        System.out.println(cur.toString() +" - "+ target);
+        if (target == 0){
+            Collections.sort(cur);
 
-        int total = 0;
-        for (int coin : coins) {
-            total = (total + solveUsingRecursion(coins, target - coin));
+            if(!checkInList(cur,out)){
+
+//                System.out.println(cur.toString());
+                out.add(new ArrayList<>(cur));
+                return 1;
+            }
+            return 0;
         }
-        return total;
-    }
 
-    private static int solveUsingMemoization(int[] coins, int target, int[] memo) {
-        int MOD = 1_000_000_007;
-        if (target == 0) return 1;
         if(target < 0) return 0;
+        if(memo[target] != -1){
+            if(memo[target] != 0) {
+                cur.add(target);
+//                System.out.println(cur.toString() + " -> " + Arrays.toString(memo));
+                Collections.sort(cur);
+                if (!checkInList(cur, out)) {
+//                    System.out.println(cur.toString());
+                    out.add(new ArrayList<>(cur));
+                }
+                cur.remove(cur.size()-1);
+            }
+            return memo[target];
+        }
 
-        if(memo[target] != 0) return memo[target];
         int total = 0;
         for (int coin : coins) {
-            total += solveUsingRecursion(coins, target - coin) % MOD;
+            cur.add(coin);
+            total += solveUsingRecursion(coins, target - coin, cur, out, memo);
+            cur.remove(cur.size()-1);
+//            cur.removeLast();
         }
 
         memo[target] = total;
+
         return total;
     }
 
+    public static boolean  checkInList(ArrayList<Integer> cur, List<List<Integer>> out){
+        for(List<Integer> list : out ){
+            if(list.size() == cur.size()){
+                boolean isThere = true;
+                int i;
+                for(i =0;i<cur.size();i++){
+                    if(!Objects.equals(cur.get(i), list.get(i))){
+                        isThere = false;
+                        break;
+                    }
+                }
+                if(isThere && i == cur.size()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+//    private static int solveUsingMemoization(int[] coins, int target, int[] memo) {
+//        int MOD = 1_000_000_007;
+//        if (target == 0) return 1;
+//        if(target < 0) return 0;
+//
+//        if(memo[target] != 0) return memo[target];
+//        int total = 0;
+//        for (int coin : coins) {
+//            total += solveUsingRecursion(coins, target - coin) % MOD;
+//        }
+//
+//        memo[target] = total;
+//        return total;
+//    }
+//
     public static int solveUsingDP(int[] coins, int target) {
         int MOD = 1_000_000_007;
         int[] dp = new int[target + 1];
