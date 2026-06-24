@@ -1,0 +1,12 @@
+Functional Requirements
+- Cache should be remove least recently used - jo sabse kam use hua hai use remove krna hai
+- capacity hogi
+- what methods to support? - get, put
+- Cache should support generic data types data types
+- an update through put should count as usage. The key should be moved to the front as the most recently used.
+- Cache should be thread safe
+- Both get and put should run in O(1) time
+
+
+
+Node
